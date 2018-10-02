@@ -1,16 +1,23 @@
 Specification list for MetaFusion token crowdsale is as follows:
 
 MetaFusion token:
-Supply: 100,000,000
-Decimal Places: 5
-Name: MetaFusion
-Symbol: MTF
+
+Type: 			ERC-20 token
+Supply: 		100,000,000
+Decimal places: 5
+Name: 			MetaFusion
+Symbol: 		MTF
 
 MetaFusion crowdsale:
-No soft or hard cap.
-1% of all ETH raised goes to Iconemy wallet.
-Single set price.
-It has a start and end date (not yet given).
-Permission must be granted from ICO owner with each transfer of tokens.
-Sale myst have function to stop and thus refund all.
-Refunds to specific people must be possible.
+
+Soft cap: 		None
+Hard cap: 		None
+Commission: 	1% of tokens to Iconemy
+Pricing: 		Linear (single price)
+Start date: 	Needs to be supplied
+End date: 		Needs to be supplied
+Stoppable: 		Yes
+Refundable: 	Yes
+
+Extra notes: 	The owner wants to be able to re-sell coins in another crowdsale at a later date therefore, we will allow him to keep the coins in his wallet, then give the crowdsale contract an allowance to spend on his behalf. If all tokens are not sold, he will still own the tokens and will be able to give another sale an allowance so that can sell more coins at a later date. 
+
