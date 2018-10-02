@@ -95,8 +95,8 @@ contract('MetaFusion', function (accounts) {
   it('should not let the spender spend coins without an allowance', function () {
 
     var owner = accounts[0];
-    var spender = accounts[1];
-    var receiver = accounts[2];
+    var spender = accounts[3];
+    var receiver = accounts[4];
 
     var ownerStartingBalance;
     var receiverStartingBalance;
@@ -146,45 +146,89 @@ contract('MetaFusion', function (accounts) {
   })
 
   it('should send coin correctly', function () {
-    var meta
+    var meta;
 
-    //    Get initial balances of first and second account.
-    var spender = accounts[0]
-    var receiver = accounts[1]
+    // Should have 10 coins in balance from the fourth test
+    var spender = accounts[2];
+    var receiver = accounts[3];
 
-    var accountOneStartingBalance
-    var accountTwoStartingBalance
-    var accountOneEndingBalance
-    var accountTwoEndingBalance
+    var spenderStartingBalance;
+    var receiverStartingBalance;
+    var spenderEndingBalance;
+    var receiverEndingBalance;
 
-    var amount = 10
+    var amount = 10;
 
-    return MetaCoin.deployed().then(function (instance) {
+    return MetaFusion.deployed().then(function (instance) {
       meta = instance
-      return meta.getBalance.call(accountOne)
+      return meta.balanceOf.call(spender)
     }).then(function (balance) {
-      accountOneStartingBalance = balance.toNumber()
-      return meta.getBalance.call(accountTwo)
+      spenderStartingBalance = balance.toNumber()
+      return meta.balanceOf.call(receiver)
     }).then(function (balance) {
-      accountTwoStartingBalance = balance.toNumber()
-      return meta.sendCoin(accountTwo, amount, { from: accountOne })
+      receiverStartingBalance = balance.toNumber()
+      return meta.sendCoin(receiver, amount, { from: spender })
     }).then(function () {
-      return meta.getBalance.call(accountOne)
+      return meta.balanceOf.call(spender)
     }).then(function (balance) {
-      accountOneEndingBalance = balance.toNumber()
-      return meta.getBalance.call(accountTwo)
+      spenderEndingBalance = balance.toNumber()
+      return meta.balanceOf.call(receiver)
     }).then(function (balance) {
-      accountTwoEndingBalance = balance.toNumber()
+      receiverEndingBalance = balance.toNumber()
 
       assert.equal(
-        accountOneEndingBalance,
-        accountOneStartingBalance - amount,
+        spenderEndingBalance,
+        spenderStartingBalance - amount,
         "Amount wasn't correctly taken from the sender"
       )
       assert.equal(
-        accountTwoEndingBalance,
-        accountTwoStartingBalance + amount,
+        receiverEndingBalance,
+        receiverStartingBalance + amount,
         "Amount wasn't correctly sent to the receiver"
+      )
+    })
+  })
+
+  it('should not let someone send coin wihtout balance', function () {
+    var meta;
+
+    // Should have 00 coins in balance from the previous test
+    var spender = accounts[2];
+    var receiver = accounts[3];
+
+    var spenderStartingBalance;
+    var receiverStartingBalance;
+    var spenderEndingBalance;
+    var receiverEndingBalance;
+
+    var amount = 10;
+
+    return MetaFusion.deployed().then(function (instance) {
+      meta = instance
+      return meta.balanceOf.call(spender)
+    }).then(function (balance) {
+      spenderStartingBalance = balance.toNumber()
+      return meta.balanceOf.call(receiver)
+    }).then(function (balance) {
+      receiverStartingBalance = balance.toNumber()
+      return meta.sendCoin(receiver, amount, { from: spender })
+    }).then(function () {
+      return meta.balanceOf.call(spender)
+    }).then(function (balance) {
+      spenderEndingBalance = balance.toNumber()
+      return meta.balanceOf.call(receiver)
+    }).then(function (balance) {
+      receiverEndingBalance = balance.toNumber()
+
+      assert.equal(
+        spenderEndingBalance,
+        spenderStartingBalance,
+        "Amount was incorrectly taken from the sender"
+      )
+      assert.equal(
+        receiverEndingBalance,
+        receiverStartingBalance,
+        "Amount was incorrectly sent to the receiver"
       )
     })
   })
