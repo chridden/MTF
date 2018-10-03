@@ -78,8 +78,7 @@ contract ERC20 is IERC20 {
     return true;
   }
 
-
-    /**
+  /**
    * @dev Transfer tokens from one address to another
    * @param from address The address which you want to send tokens from
    * @param to address The address which you want to transfer to

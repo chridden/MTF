@@ -1,4 +1,4 @@
-var MetaFusion = artifacts.require('./MetaFusion.sol')
+var MetaFusion = artifacts.require('./MetaFusionToken.sol')
 
 contract('MetaFusion', function (accounts) {
   // We check if the MetaFusion contract has been deployed

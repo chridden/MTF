@@ -12,7 +12,7 @@ MetaFusion crowdsale:
 
 Soft cap: 		None
 Hard cap: 		None
-Commission: 	1% of tokens to Iconemy
+Commission: 	1% of funds to Iconemy
 Pricing: 		Linear (single price)
 Start date: 	Needs to be supplied
 End date: 		Needs to be supplied
