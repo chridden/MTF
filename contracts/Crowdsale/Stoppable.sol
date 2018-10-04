@@ -21,4 +21,4 @@ contract Stoppable is Ownable {
     halted = true;
     emit SaleStopped(msg.sender, now);
   }
-}
+}§

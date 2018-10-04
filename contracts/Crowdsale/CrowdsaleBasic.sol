@@ -34,6 +34,8 @@ contract Crowdsale is Stoppable{
   mapping(address => uint256) public tokenBalanceOf;
   mapping(address => bool) public refunded;
 
+  //boolean telling whether 
+
   /**
    * event for token purchase logging
    * @param purchaser who paid for the tokens
@@ -77,12 +79,26 @@ contract Crowdsale is Stoppable{
     // calculate token amount to be created
     uint256 tokens = tokensToRecieve(weiAmount);
 
+
+    //This checks that the tokens requested is less than or equal to tokens available
+    checkAllowance(tokens);
+
     // MUST DO REQUIRE AFTER tokens are calculated to check for cap restrictions in stages
     require(validPurchase(tokens));
 
-    // We move the participants sliders before we mint the tokens to prevent re-entrancy
+
     finalizeSale(weiAmount, tokens);
-    produceTokens(msg.sender, weiAmount, tokens);
+
+    
+
+
+  }
+
+  //check that the amount of tokens requested is less than or equal to the ammount of tokens allowed
+  //to purchase
+
+  function checkAllowance(uint256 _tokens) public view returns (bool){
+  	return (tokenBalanceOf[msg.sender]<=tokenBalanceOf[tx.origin]);
   }
 
     // This was created to be overriden by stages implementation
@@ -97,9 +113,24 @@ contract Crowdsale is Stoppable{
     tokensSent = tokensSent.add(_tokens);
   }
 
+  // This was created to be overridden by the stages implementation
+  // Again, this is dependent on the price of tokens which may or may not be collected in stages
+  function tokensToRecieve(uint256 _wei) internal view returns (uint256 tokens) {
+    return _wei.div(rate);
+  }
+
     // @return true if crowdsale event has ended
   function hasEnded() public view returns (bool) {
     return now > endTime;
+  }
+
+    // @return true if the transaction can buy tokens
+  // Receives tokens to send as variable for custom stage implementation
+  // Has an unused variable _tokens which is necessary for capped sale implementation
+  function validPurchase(uint256 _tokens) internal view returns (bool) {
+    bool withinPeriod = now >= startTime && now <= endTime;
+    bool nonZeroPurchase = msg.value != 0;
+    return withinPeriod && nonZeroPurchase;
   }
 
 }
