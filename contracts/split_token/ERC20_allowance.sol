@@ -29,11 +29,23 @@ contract ERC20_allowance is IERC20_allowance, ERC20_basic {
    * @param value The amount of tokens to be spent.
    */
   function approve(address spender, uint256 value) public returns (bool) {
+    // address(0) = invalid address
+    // Require that the spender address is NOT EQUAL to an invalid address
     require(spender != address(0));
 
     _allowed[msg.sender][spender] = value;
     emit Approval(msg.sender, spender, value);
     return true;
+  }
+
+  function approveAndCall(address _spender, uint256 _value) public returns (bool success) {
+      // This function is used by contracts to allowing the token to notify them when an approval has been made. 
+      tokenSpender spender = tokenSpender(_spender);
+
+      if(approve(_spender, _value)){
+          spender.receiveApproval(msg.sender, this);
+          return true;
+      }
   }
 
   /**
@@ -42,8 +54,6 @@ contract ERC20_allowance is IERC20_allowance, ERC20_basic {
    * @param to address The address which you want to transfer to
    * @param value uint256 the amount of tokens to be transferred
    */
-
-   //
   function transferFrom(
     address from,
     address to,
