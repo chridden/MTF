@@ -17,7 +17,6 @@ Pricing: 		Linear (single price)
 Start date: 	Needs to be supplied
 End date: 		Needs to be supplied
 Stoppable: 		Yes
-Refundable: 	Yes
 
 Extra notes: 	The owner wants to be able to re-sell coins in another crowdsale at a later date therefore, we will allow him to keep the coins in his wallet, then give the crowdsale contract an allowance to spend on his behalf. If all tokens are not sold, he will still own the tokens and will be able to give another sale an allowance so that can sell more coins at a later date. 
 
