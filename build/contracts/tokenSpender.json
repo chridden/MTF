@@ -16,9 +16,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// Abstract contract for the full ERC 20 Token standard\n// https://github.com/ethereum/EIPs/issues/20\npragma solidity ^0.4.19;\n\nimport './SafeMath.sol';\nimport './ERC20_mtf.sol';\n\n/*\nThis Token Contract implements the standard token functionality (https://github.com/ethereum/EIPs/issues/20) as well as the following OPTIONAL extras intended for use by humans.\n\nThis contract was then adapted by Iconemy to suit the MetaFusion token \n\n1) Initial Finite Supply (upon creation one specifies how much is minted).\n2) In the absence of a token registry: Optional Decimal, Symbol & Name.\n3) Optional approveAndCall() functionality to notify a contract if an approval() has occurred.\n\n*/\ncontract ERC20_mtf_allowance is ERC20_mtf {\n    using SafeMath for uint256;\n\n    mapping (address => mapping (address => uint256)) allowed;   \n\n    // Constructor function which takes in values from migrations and passes to parent contract\n    function ERC20_mtf_allowance(\n        uint256 _initialAmount,\n        string _tokenName,\n        uint8 _decimalUnits,\n        string _tokenSymbol,\n        address _owner\n    ) public ERC20_mtf( _initialAmount, _tokenName, _decimalUnits, _tokenSymbol, _owner){}\n\n    event Approval(address indexed _owner, address indexed _spender, uint256 _value);\n\n    // Get the allowance of a spender for a certain account\n    function allowanceOf(address _owner, address _spender) public constant returns (uint256 remaining) {\n        return allowed[_owner][_spender];\n    }\n\n    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {\n        //Check the allowance of the address spending tokens on behalf of account\n        uint256 allowance = allowanceOf(_from, msg.sender);\n        //Require that they must have more in their allowance than they wish to send\n        require(allowance >= _value);\n\n        //Require that allowance isnt the max integer\n        require(allowance < MAX_UINT256);\n            \n        //If so, take from their allowance and transfer\n        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);\n\n        if(_transfer(_from, _to, _value)){\n            return true;\n        } else {\n            return false;\n        } \n        \n    }\n\n    // Approve the allowance for a certain spender\n    function approve(address _spender, uint256 _value) public returns (bool success) {\n        allowed[msg.sender][_spender] = _value;\n        Approval(msg.sender, _spender, _value);\n        return true;\n    }\n\n    function approveAndCall(address _spender, uint256 _value) public returns (bool success) {\n        // This function is used by contracts to allowing the token to notify them when an approval has been made. \n        tokenSpender spender = tokenSpender(_spender);\n\n        if(approve(_spender, _value)){\n            spender.receiveApproval();\n            return true;\n        }\n    }\n}\n\n// Interface for Metafusions crowdsale contract\ncontract tokenSpender { \n    function receiveApproval() external; \n}",
-  "sourcePath": "/Users/jackpickering/Desktop/Development/metafusion_contracts/contracts/ERC20_mtf_allowance.sol",
+  "sourcePath": "/Users/Blueberry/metafusion/contracts/ERC20_mtf_allowance.sol",
   "ast": {
-    "absolutePath": "/Users/jackpickering/Desktop/Development/metafusion_contracts/contracts/ERC20_mtf_allowance.sol",
+    "absolutePath": "/Users/Blueberry/metafusion/contracts/ERC20_mtf_allowance.sol",
     "exportedSymbols": {
       "ERC20_mtf_allowance": [
         425
@@ -42,7 +42,7 @@
         "src": "102:24:1"
       },
       {
-        "absolutePath": "/Users/jackpickering/Desktop/Development/metafusion_contracts/contracts/SafeMath.sol",
+        "absolutePath": "/Users/Blueberry/metafusion/contracts/SafeMath.sol",
         "file": "./SafeMath.sol",
         "id": 249,
         "nodeType": "ImportDirective",
@@ -53,7 +53,7 @@
         "unitAlias": ""
       },
       {
-        "absolutePath": "/Users/jackpickering/Desktop/Development/metafusion_contracts/contracts/ERC20_mtf.sol",
+        "absolutePath": "/Users/Blueberry/metafusion/contracts/ERC20_mtf.sol",
         "file": "./ERC20_mtf.sol",
         "id": 250,
         "nodeType": "ImportDirective",
@@ -66,7 +66,7 @@
       {
         "baseContracts": [
           {
-            "arguments": [],
+            "arguments": null,
             "baseName": {
               "contractScope": null,
               "id": 251,
@@ -196,6 +196,7 @@
               "src": "1183:2:1",
               "statements": []
             },
+            "documentation": null,
             "id": 282,
             "implemented": true,
             "isConstructor": true,
@@ -330,7 +331,7 @@
                   "storageLocation": "default",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string memory"
+                    "typeString": "string"
                   },
                   "typeName": {
                     "id": 264,
@@ -339,7 +340,7 @@
                     "src": "995:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string storage pointer"
+                      "typeString": "string"
                     }
                   },
                   "value": null,
@@ -382,7 +383,7 @@
                   "storageLocation": "default",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string memory"
+                    "typeString": "string"
                   },
                   "typeName": {
                     "id": 268,
@@ -391,7 +392,7 @@
                     "src": "1051:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string storage pointer"
+                      "typeString": "string"
                     }
                   },
                   "value": null,
@@ -441,6 +442,7 @@
           },
           {
             "anonymous": false,
+            "documentation": null,
             "id": 290,
             "name": "Approval",
             "nodeType": "EventDefinition",
@@ -615,6 +617,7 @@
                 }
               ]
             },
+            "documentation": null,
             "id": 306,
             "implemented": true,
             "isConstructor": false,
@@ -784,7 +787,7 @@
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1679,
+                          "referencedDeclaration": 1682,
                           "src": "1719:3:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
@@ -905,8 +908,11 @@
                       "id": 325,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 1682,
+                      "overloadedDeclarations": [
+                        1685,
+                        1686
+                      ],
+                      "referencedDeclaration": 1685,
                       "src": "1825:7:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -991,8 +997,11 @@
                       "id": 331,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 1682,
+                      "overloadedDeclarations": [
+                        1685,
+                        1686
+                      ],
+                      "referencedDeclaration": 1685,
                       "src": "1918:7:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -1076,7 +1085,7 @@
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1679,
+                          "referencedDeclaration": 1682,
                           "src": "2044:3:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
@@ -1185,7 +1194,7 @@
                               "name": "msg",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1679,
+                              "referencedDeclaration": 1682,
                               "src": "2073:3:1",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_message",
@@ -1407,6 +1416,7 @@
                 }
               ]
             },
+            "documentation": null,
             "id": 367,
             "implemented": true,
             "isConstructor": false,
@@ -1579,7 +1589,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1679,
+                            "referencedDeclaration": 1682,
                             "src": "2391:3:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -1673,7 +1683,7 @@
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1679,
+                          "referencedDeclaration": 1682,
                           "src": "2440:3:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
@@ -1791,6 +1801,7 @@
                 }
               ]
             },
+            "documentation": null,
             "id": 395,
             "implemented": true,
             "isConstructor": false,
@@ -2146,6 +2157,7 @@
                 }
               ]
             },
+            "documentation": null,
             "id": 424,
             "implemented": true,
             "isConstructor": false,
@@ -2271,6 +2283,7 @@
         "nodes": [
           {
             "body": null,
+            "documentation": null,
             "id": 428,
             "implemented": false,
             "isConstructor": false,
@@ -2305,7 +2318,7 @@
     "src": "102:2901:1"
   },
   "legacyAST": {
-    "absolutePath": "/Users/jackpickering/Desktop/Development/metafusion_contracts/contracts/ERC20_mtf_allowance.sol",
+    "absolutePath": "/Users/Blueberry/metafusion/contracts/ERC20_mtf_allowance.sol",
     "exportedSymbols": {
       "ERC20_mtf_allowance": [
         425
@@ -2329,7 +2342,7 @@
         "src": "102:24:1"
       },
       {
-        "absolutePath": "/Users/jackpickering/Desktop/Development/metafusion_contracts/contracts/SafeMath.sol",
+        "absolutePath": "/Users/Blueberry/metafusion/contracts/SafeMath.sol",
         "file": "./SafeMath.sol",
         "id": 249,
         "nodeType": "ImportDirective",
@@ -2340,7 +2353,7 @@
         "unitAlias": ""
       },
       {
-        "absolutePath": "/Users/jackpickering/Desktop/Development/metafusion_contracts/contracts/ERC20_mtf.sol",
+        "absolutePath": "/Users/Blueberry/metafusion/contracts/ERC20_mtf.sol",
         "file": "./ERC20_mtf.sol",
         "id": 250,
         "nodeType": "ImportDirective",
@@ -2353,7 +2366,7 @@
       {
         "baseContracts": [
           {
-            "arguments": [],
+            "arguments": null,
             "baseName": {
               "contractScope": null,
               "id": 251,
@@ -2483,6 +2496,7 @@
               "src": "1183:2:1",
               "statements": []
             },
+            "documentation": null,
             "id": 282,
             "implemented": true,
             "isConstructor": true,
@@ -2617,7 +2631,7 @@
                   "storageLocation": "default",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string memory"
+                    "typeString": "string"
                   },
                   "typeName": {
                     "id": 264,
@@ -2626,7 +2640,7 @@
                     "src": "995:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string storage pointer"
+                      "typeString": "string"
                     }
                   },
                   "value": null,
@@ -2669,7 +2683,7 @@
                   "storageLocation": "default",
                   "typeDescriptions": {
                     "typeIdentifier": "t_string_memory_ptr",
-                    "typeString": "string memory"
+                    "typeString": "string"
                   },
                   "typeName": {
                     "id": 268,
@@ -2678,7 +2692,7 @@
                     "src": "1051:6:1",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
-                      "typeString": "string storage pointer"
+                      "typeString": "string"
                     }
                   },
                   "value": null,
@@ -2728,6 +2742,7 @@
           },
           {
             "anonymous": false,
+            "documentation": null,
             "id": 290,
             "name": "Approval",
             "nodeType": "EventDefinition",
@@ -2902,6 +2917,7 @@
                 }
               ]
             },
+            "documentation": null,
             "id": 306,
             "implemented": true,
             "isConstructor": false,
@@ -3071,7 +3087,7 @@
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1679,
+                          "referencedDeclaration": 1682,
                           "src": "1719:3:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
@@ -3192,8 +3208,11 @@
                       "id": 325,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 1682,
+                      "overloadedDeclarations": [
+                        1685,
+                        1686
+                      ],
+                      "referencedDeclaration": 1685,
                       "src": "1825:7:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -3278,8 +3297,11 @@
                       "id": 331,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 1682,
+                      "overloadedDeclarations": [
+                        1685,
+                        1686
+                      ],
+                      "referencedDeclaration": 1685,
                       "src": "1918:7:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -3363,7 +3385,7 @@
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1679,
+                          "referencedDeclaration": 1682,
                           "src": "2044:3:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
@@ -3472,7 +3494,7 @@
                               "name": "msg",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1679,
+                              "referencedDeclaration": 1682,
                               "src": "2073:3:1",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_message",
@@ -3694,6 +3716,7 @@
                 }
               ]
             },
+            "documentation": null,
             "id": 367,
             "implemented": true,
             "isConstructor": false,
@@ -3866,7 +3889,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 1679,
+                            "referencedDeclaration": 1682,
                             "src": "2391:3:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -3960,7 +3983,7 @@
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1679,
+                          "referencedDeclaration": 1682,
                           "src": "2440:3:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_magic_message",
@@ -4078,6 +4101,7 @@
                 }
               ]
             },
+            "documentation": null,
             "id": 395,
             "implemented": true,
             "isConstructor": false,
@@ -4433,6 +4457,7 @@
                 }
               ]
             },
+            "documentation": null,
             "id": 424,
             "implemented": true,
             "isConstructor": false,
@@ -4558,6 +4583,7 @@
         "nodes": [
           {
             "body": null,
+            "documentation": null,
             "id": 428,
             "implemented": false,
             "isConstructor": false,
@@ -4593,9 +4619,9 @@
   },
   "compiler": {
     "name": "solc",
-    "version": "0.4.19+commit.c4cbbb05.Emscripten.clang"
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "2.0.0",
-  "updatedAt": "2018-10-12T16:04:11.009Z"
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-10-16T13:37:03.310Z"
 }

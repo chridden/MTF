@@ -8,10 +8,12 @@ import { default as contract } from 'truffle-contract'
 // Import our contract artifacts and turn them into usable abstractions.
 import metaFusionArtifact from '../../build/contracts/ERC20_mtf_allowance.json'
 import metaFusionSaleArtifact from '../../build/contracts/SALE_mtf.json'
+import metaFusionSale2Artifact from '../../build/contracts/second_sale.json'
 
 // MetaCoin is our usable abstraction, which we'll use through the code below.
 const MetaFusion = contract(metaFusionArtifact);
 const Sale = contract(metaFusionSaleArtifact);
+const Sale2 = contract(metaFusionSale2Artifact);
 
 // The following code is simple to show off interacting with your contracts.
 // As your needs grow you will likely need to change its form and structure.

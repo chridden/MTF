@@ -26,7 +26,7 @@ contract ERC20_mtf_allowance is ERC20_mtf {
         string _tokenName,
         uint8 _decimalUnits,
         string _tokenSymbol,
-        address _owner
+        address _owner,
     ) public ERC20_mtf( _initialAmount, _tokenName, _decimalUnits, _tokenSymbol, _owner){}
 
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
