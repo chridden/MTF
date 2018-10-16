@@ -51,6 +51,7 @@ const App = {
       self.refreshAllowance();
       self.refreshSaleAllowance();
       self.refreshPrice();
+      self.refreshPrice2();
       self.refreshEnded();
       self.refreshRefundable();
     })
