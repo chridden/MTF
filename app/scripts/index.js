@@ -245,6 +245,24 @@ const App = {
     })
   },
 
+  withdraw2: function () {
+    const self = this
+
+    this.setStatus('Initiating transaction... (please wait)')
+
+    let sale2
+    Sale2.deployed().then(function (instance) {
+      sale2 = instance
+      return sale2.collectInvestment({from: account});
+    }).then(function () {
+      self.setStatus('Transaction complete!')
+      self.refreshBalance();
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error sending coin; see log.')
+    })
+  },
+
   buyTokens: function () {
     const self = this
 
