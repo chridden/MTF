@@ -425,6 +425,22 @@ const App = {
     })
   },
 
+
+    stopSecondSale: function () {
+    const self = this
+
+    let sale2
+    Sale2.deployed().then(function (instance) {
+      sale2 = instance
+      return sale2.stopICO({ from: account })
+    }).then(function (value) {
+      self.refreshEnded();
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error getting balance; see log.')
+    })
+  },
+
   refreshEnded: function () {
     const self = this
 
@@ -440,6 +456,7 @@ const App = {
       self.setStatus('Error getting balance; see log.')
     })
   },
+
 
   collectRefund: function () {
     const self = this
