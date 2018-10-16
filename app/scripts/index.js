@@ -353,6 +353,28 @@ const App = {
     })
   },
 
+    refreshSale2Allowance: function () {
+    const self = this
+
+    var owner = '0x627306090abaB3A6e1400e9345bC60c78a8BEf57';
+    var spender = account;
+
+    let sale2
+    Sale2.deployed().then(function (instance) {
+      sale2 = instance
+      return sale2.allowanceOf.call({ from: account })
+    }).then(function (value) {
+      const allowanceElement = document.getElementById('sale2Allowance')
+
+      var sale2_allowance = convertPickToJacks(value.valueOf());
+
+      allowanceElement.innerHTML = addCommas(sale2_allowance);
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error getting balance; see log.')
+    })
+  },
+
   refreshRefundable: function () {
     const self = this
 
