@@ -30,6 +30,7 @@ const App = {
     // Bootstrap the MetaCoin abstraction for Use.
     MetaFusion.setProvider(web3.currentProvider);
     Sale.setProvider(web3.currentProvider);
+    Sale2.setProvider(web3.currentProvider);
 
     // Get the initial account balance so it can be displayed.
     web3.eth.getAccounts(function (err, accs) {
@@ -69,6 +70,24 @@ const App = {
     Sale.deployed().then(function (instance) {
       sale = instance
       return sale.collectCommission({from: account});
+    }).then(function () {
+      self.setStatus('Transaction complete!')
+      self.refreshBalance();
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error sending coin; see log.')
+    })
+  },
+
+    collectCommission2: function () {
+    const self = this
+
+    this.setStatus('Initiating transaction... (please wait)')
+
+    let sale2
+    Sale2.deployed().then(function (instance) {
+      sale2 = instance
+      return sale2.collectCommission({from: account});
     }).then(function () {
       self.setStatus('Transaction complete!')
       self.refreshBalance();
@@ -124,6 +143,40 @@ const App = {
       return sale.owner.call({ from: account })
     }).then(function (value) {
       const saleElement = document.getElementById('sale_owner');
+      saleElement.innerHTML = value.valueOf();
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error getting balance; see log.')
+    })
+  },
+
+    refreshPrice2: function () {
+    const self = this
+
+    let sale2
+    Sale2.deployed().then(function (instance) {
+      sale2 = instance
+      return sale2.getPrice.call({ from: account })
+    }).then(function (value) {
+      const priceElement = document.getElementById('tokenPrice2');
+      price = convertJackToPicks(web3.fromWei(value.valueOf(), "ether"));
+      priceElement.innerHTML = price;
+
+      return sale2.startTime.call({ from: account })
+    }).then(function (value) {
+      const startElement = document.getElementById('start_time2');
+      var date = parseInt(value.valueOf());
+      date = date * 1000;
+      startElement.innerHTML = new Date(date);
+      return sale2.endTime.call({ from: account })
+    }).then(function (value) {
+      const endElement = document.getElementById('end_time2');
+      var date = parseInt(value.valueOf());
+      date = date * 1000;
+      endElement.innerHTML = new Date(date);
+      return sale2.owner.call({ from: account })
+    }).then(function (value) {
+      const saleElement = document.getElementById('sale_owner2');
       saleElement.innerHTML = value.valueOf();
     }).catch(function (e) {
       console.log(e)
@@ -206,6 +259,29 @@ const App = {
     Sale.deployed().then(function (instance) {
       sale = instance
       return sale.buyTokens({from: account, value: amount});
+    }).then(function () {
+      self.setStatus('Transaction complete!')
+      self.refreshBalance();
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error sending coin; see log.')
+    })
+  },
+
+    buyTokens2: function () {
+    const self = this
+
+    var amount = parseFloat(document.getElementById('amount').value);
+
+    var amount = amount * price;
+    amount = web3.toWei(amount, "ether");
+
+    this.setStatus('Initiating transaction... (please wait)')
+
+    let sale2
+    Sale2.deployed().then(function (instance) {
+      sale2 = instance
+      return sale2.buyTokens({from: account, value: amount});
     }).then(function () {
       self.setStatus('Transaction complete!')
       self.refreshBalance();

@@ -76,6 +76,35 @@
   <br><br>
   <span id="status"></span>
   <br>
+
+
+  <h1>Functions for second sale</h1>
+
+  <h3>You have <span class="black"><span id="balance"></span> META</span></h3>
+  <h3>You have been given <span class="black"><span id="allowance2"></span> META</span></h3>
+  <h3>Eligible for refund <span class="black"><span id="refundable2"></span></span></h3>
+
+  <h3>Sale allowance = <span class="black"><span id="saleAllowance2"></span></span></h3>
+  <h3>Sale price = <span class="black"><span id="tokenPrice2"></span> ETH</span></h3>
+  <h3>Sale start = <span class="black"><span id="start_time2"></span></span></h3>
+  <h3>Sale end = <span class="black"><span id="end_time2"></span></span></h3>
+  <h3>Sale owner = <span class="black"><span id="sale_owner2"></span></span></h3>
+  <h3>Sale halted = <span class="black"><span id="sale_halted2"></span></span></h3>
+
+    <br>
+  <h1>Withdraw commission for second sale</h1>
+  <br><br><button id="send" onclick="App.collectCommission2()">Collect</button>
+  <br><br>
+  <br>
+
+   <br>
+  <h1>Buy MetaCoins from second sale</h1>
+  <br><label for="amount">Amount:</label><input type="text" id="amount" placeholder="e.g., 95"></input>
+  <br><br><button id="send" onclick="App.buyTokens2()">Buy MetaCoin</button>
+  <br><br>
+  <br>
+
+
   <span class="hint"><strong>Hint:</strong> open the browser developer console to view any errors and warnings.</span>
 </body>
 </html>
