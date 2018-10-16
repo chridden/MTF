@@ -50,9 +50,11 @@ const App = {
       self.refreshBalance();
       self.refreshAllowance();
       self.refreshSaleAllowance();
+      self.refreshSaleAllowance2();
       self.refreshPrice();
       self.refreshPrice2();
       self.refreshEnded();
+      self.refreshEnded2();
       self.refreshRefundable();
     })
   },
@@ -201,6 +203,28 @@ const App = {
       self.setStatus('Transaction complete!')
       self.refreshAllowance();
       self.refreshSaleAllowance();
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error sending coin; see log.')
+    })
+  },
+
+    approveAndCall2: function () {
+    const self = this
+
+    const amount = convertJackToPicks(parseInt(document.getElementById('call_amount').value));
+    const spender = document.getElementById('call_spender').value
+
+    this.setStatus('Initiating transaction... (please wait)')
+
+    let meta
+    MetaFusion.deployed().then(function (instance) {
+      meta = instance
+      return meta.approveAndCall(spender, amount, { from: account })
+    }).then(function () {
+      self.setStatus('Transaction complete!')
+      self.refreshAllowance();
+      self.refreshSaleAllowance2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error sending coin; see log.')
@@ -372,7 +396,7 @@ const App = {
     })
   },
 
-    refreshSale2Allowance: function () {
+    refreshSaleAllowance2: function () {
     const self = this
 
     var owner = '0x627306090abaB3A6e1400e9345bC60c78a8BEf57';
@@ -383,7 +407,7 @@ const App = {
       sale2 = instance
       return sale2.allowanceOf.call({ from: account })
     }).then(function (value) {
-      const allowanceElement = document.getElementById('sale2Allowance')
+      const allowanceElement = document.getElementById('saleAllowance2')
 
       var sale2_allowance = convertPickToJacks(value.valueOf());
 
@@ -434,7 +458,7 @@ const App = {
       sale2 = instance
       return sale2.stopICO({ from: account })
     }).then(function (value) {
-      self.refreshEnded();
+      self.refreshEnded2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error getting balance; see log.')
@@ -450,6 +474,22 @@ const App = {
       return sale.halted.call({ from: account })
     }).then(function (value) {
       const endedElement = document.getElementById('sale_halted');
+      endedElement.innerHTML = value.valueOf();   
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error getting balance; see log.')
+    })
+  },
+
+    refreshEnded2: function () {
+    const self = this
+
+    let sale2
+    Sale2.deployed().then(function (instance) {
+      sale2 = instance
+      return sale2.halted.call({ from: account })
+    }).then(function (value) {
+      const endedElement = document.getElementById('sale_halted2');
       endedElement.innerHTML = value.valueOf();   
     }).catch(function (e) {
       console.log(e)
