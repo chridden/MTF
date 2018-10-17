@@ -48,7 +48,9 @@ const App = {
       account = accounts[0]
 
       self.refreshBalance();
+      self.refreshBalance2();
       self.refreshAllowance();
+      self.refreshAllowance2();
       self.refreshSaleAllowance();
       self.refreshSaleAllowance2();
       self.refreshPrice();
@@ -56,6 +58,7 @@ const App = {
       self.refreshEnded();
       self.refreshEnded2();
       self.refreshRefundable();
+      self.refreshRefundable2();
     })
   },
 
@@ -76,6 +79,7 @@ const App = {
     }).then(function () {
       self.setStatus('Transaction complete!')
       self.refreshBalance();
+      self.refreshBalance2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error sending coin; see log.')
@@ -94,6 +98,7 @@ const App = {
     }).then(function () {
       self.setStatus('Transaction complete!')
       self.refreshBalance();
+      self.refreshBalance2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error sending coin; see log.')
@@ -109,6 +114,25 @@ const App = {
       return meta.balanceOf.call(account, { from: account })
     }).then(function (value) {
       const balanceElement = document.getElementById('balance');
+
+      var balance = convertPickToJacks(value.valueOf())
+
+      balanceElement.innerHTML = addCommas(balance);
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error getting balance; see log.')
+    })
+  },
+
+    refreshBalance2: function () {
+    const self = this
+
+    let meta
+    MetaFusion.deployed().then(function (instance) {
+      meta = instance
+      return meta.balanceOf.call(account, { from: account })
+    }).then(function (value) {
+      const balanceElement = document.getElementById('balance2');
 
       var balance = convertPickToJacks(value.valueOf())
 
@@ -212,8 +236,8 @@ const App = {
     approveAndCall2: function () {
     const self = this
 
-    const amount = convertJackToPicks(parseInt(document.getElementById('call_amount').value));
-    const spender = document.getElementById('call_spender').value
+    const amount = convertJackToPicks(parseInt(document.getElementById('call_amount2').value));
+    const spender = document.getElementById('call_spender2').value
 
     this.setStatus('Initiating transaction... (please wait)')
 
@@ -223,7 +247,7 @@ const App = {
       return meta.approveAndCall(spender, amount, { from: account })
     }).then(function () {
       self.setStatus('Transaction complete!')
-      self.refreshAllowance();
+      self.refreshAllowance2();
       self.refreshSaleAllowance2();
     }).catch(function (e) {
       console.log(e)
@@ -245,7 +269,8 @@ const App = {
       return meta.transfer(receiver, amount, { from: account })
     }).then(function () {
       self.setStatus('Transaction complete!')
-      self.refreshBalance()
+      self.refreshBalance();
+      self.refreshBalance2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error sending coin; see log.')
@@ -264,6 +289,7 @@ const App = {
     }).then(function () {
       self.setStatus('Transaction complete!')
       self.refreshBalance();
+      self.refreshBalance2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error sending coin; see log.')
@@ -282,6 +308,7 @@ const App = {
     }).then(function () {
       self.setStatus('Transaction complete!')
       self.refreshBalance();
+      self.refreshBalance2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error sending coin; see log.')
@@ -305,6 +332,7 @@ const App = {
     }).then(function () {
       self.setStatus('Transaction complete!')
       self.refreshBalance();
+      self.refreshBalance2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error sending coin; see log.')
@@ -328,6 +356,7 @@ const App = {
     }).then(function () {
       self.setStatus('Transaction complete!')
       self.refreshBalance();
+      self.refreshBalance2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error sending coin; see log.')
@@ -337,8 +366,8 @@ const App = {
   approve: function () {
     const self = this
 
-    const amount = convertJackToPicks(parseInt(document.getElementById('app_amount').value));
-    const spender = document.getElementById('app_spender').value
+    const amount = convertJackToPicks(parseInt(document.getElementById('app_amount2').value));
+    const spender = document.getElementById('app_spender2').value
 
     this.setStatus('Initiating transaction... (please wait)')
 
@@ -355,7 +384,7 @@ const App = {
     })
   },
 
-  refreshAllowance: function () {
+    refreshAllowance: function () {
     const self = this
 
     var owner = '0x627306090abaB3A6e1400e9345bC60c78a8BEf57';
@@ -373,6 +402,27 @@ const App = {
       self.setStatus('Error getting balance; see log.')
     })
   },
+
+  refreshAllowance2: function () {
+    const self = this
+
+    var owner = '0x627306090abaB3A6e1400e9345bC60c78a8BEf57';
+    var spender = account;
+
+    let meta
+    MetaFusion.deployed().then(function (instance) {
+      meta = instance
+      return meta.allowanceOf.call(owner, spender, { from: account })
+    }).then(function (value) {
+      const allowanceElement = document.getElementById('allowance2')
+      allowanceElement.innerHTML = convertPickToJacks(value.valueOf());
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error getting balance; see log.')
+    })
+  },
+
+
 
   refreshSaleAllowance: function () {
     const self = this
@@ -427,6 +477,22 @@ const App = {
       return sale.refundAvailable.call({ from: account })
     }).then(function (value) {
       const refundElement = document.getElementById('refundable');
+      refundElement.innerHTML = value.valueOf();
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error getting balance; see log.')
+    })
+  },
+
+    refreshRefundable2: function () {
+    const self = this
+
+    let sale
+    Sale2.deployed().then(function (instance) {
+      sale = instance
+      return sale.refundAvailable.call({ from: account })
+    }).then(function (value) {
+      const refundElement = document.getElementById('refundable2');
       refundElement.innerHTML = value.valueOf();
     }).catch(function (e) {
       console.log(e)
@@ -507,6 +573,7 @@ const App = {
       return sale.collectRefund({ from: account })
     }).then(function () {
       self.refreshBalance();
+      self.refreshBalance2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error getting balance; see log.')
@@ -528,7 +595,8 @@ const App = {
       return meta.transferFrom(from, receiver, amount, { from: account })
     }).then(function () {
       self.setStatus('Transaction complete!')
-      self.refreshAllowance()
+      self.refreshAllowance();
+      self.refreshAllowance2();
     }).catch(function (e) {
       console.log(e)
       self.setStatus('Error sending coin; see log.')
