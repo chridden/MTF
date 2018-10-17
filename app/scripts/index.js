@@ -59,6 +59,8 @@ const App = {
       self.refreshEnded2();
       self.refreshRefundable();
       self.refreshRefundable2();
+      self.printAddresses2();
+      self.printAddresses1();
     })
   },
 
@@ -342,7 +344,7 @@ const App = {
     buyTokens2: function () {
     const self = this
 
-    var amount = parseFloat(document.getElementById('amount').value);
+    var amount = parseFloat(document.getElementById('amount2').value);
 
     var amount = amount * price;
     amount = web3.toWei(amount, "ether");
@@ -446,6 +448,51 @@ const App = {
     })
   },
 
+  printAddresses1: function(){
+    const self = this
+
+    var owner = '0x627306090abaB3A6e1400e9345bC60c78a8BEf57';
+    var spender = account;
+
+    let sale
+    Sale.deployed().then(function (instance) {
+      sale = instance
+      return sale.token
+      console.log('works 1')
+    }).then(function (value) {
+      console.log('works 2')
+      const allowanceElement = document.getElementById('saleToken1')
+
+
+      allowanceElement.innerHTML = value;
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error getting balance; see log.')
+    })
+  },
+
+    printAddresses2: function(){
+    const self = this
+
+    var owner = '0x627306090abaB3A6e1400e9345bC60c78a8BEf57';
+    var spender = account;
+
+    let sale
+    Sale2.deployed().then(function (instance) {
+      sale = instance
+      return sale.token.call({ from: account })
+    }).then(function (value) {
+      const allowanceElement = document.getElementById('saleToken2')
+
+      allowanceElement.innerHTML = value.valueOf();
+    }).catch(function (e) {
+      console.log(e)
+      self.setStatus('Error getting balance; see log.')
+    })
+  },
+
+
+
     refreshSaleAllowance2: function () {
     const self = this
 
@@ -464,7 +511,7 @@ const App = {
       allowanceElement.innerHTML = addCommas(sale2_allowance);
     }).catch(function (e) {
       console.log(e)
-      self.setStatus('Error getting balance; see log.')
+      self.setStatus('Error getting sal allowance 2; see log.')
     })
   },
 
